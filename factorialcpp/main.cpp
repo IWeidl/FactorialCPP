@@ -44,4 +44,3 @@ long factorial(long n)
 		res *= i;
 	return res;
 }
-//
