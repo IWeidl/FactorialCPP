@@ -1,10 +1,13 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <thread>
 
 using namespace std;
 
-long factorial(long n);
+long factorial(long& n);
+void func1(long n);
+void func2(long n);
 
 int main(int argc, char *argv[])
 {
@@ -13,13 +16,13 @@ int main(int argc, char *argv[])
 	long long timeTotal = 0, fact;
 	long number = stol(argv[1], nullptr, 0);
 	long runs = stol(argv[2], nullptr, 0);
-	cout << "\nCalculatingng factorial of " << argv[1] << " 1000000000 times";
+	cout << "\nCalculating factorial of " << argv[1] << " 1000000000 times";
 	for (long k = 0; k < runs; k++) {
 		startTime = chrono::steady_clock::now();
-		for (long j = 0; j < 1000000000; j++)
-		{
-			fact = factorial(number);
-		}
+		thread thread1(func1, number);
+		thread thread2(func2, number);
+		thread1.join();
+		thread2.join();
 		endTime = chrono::duration_cast<chrono::nanoseconds>(chrono::steady_clock::now() - startTime).count();
 		cout << "\nTime to complete run " << k << " was: \n Milliseconds: " << endTime / 1000000 << "\n Seconds: " << endTime / 1000000000;
 		timeTotal += endTime;
@@ -30,10 +33,24 @@ int main(int argc, char *argv[])
 	cout << "\n\nAVERAGE FOR " << runs << " RUNS IS: \n MILLISECONDS: " << outputTimeTotal / 1000000 << "\n SECONDS: " << outputTimeTotal / 1000000000 << "\n";
 }
 
-long int factorial(long n)
+long factorial(long& n)
 {
 	int res = 1, i;
 	for (i = 2; i <= n; i++)
 		res *= i;
 	return res;
+}
+void func1(long n)
+{
+	for (long j = 0; j < 500000000; j++)
+	{
+		factorial(n);
+	}
+}
+void func2(long n)
+{
+	for (long j = 0; j < 500000000; j++)
+	{
+		factorial(n);
+	}
 }
