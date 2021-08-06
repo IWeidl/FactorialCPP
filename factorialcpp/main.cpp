@@ -5,9 +5,9 @@
 #include <vector>
 using namespace std;
 
-long factorial(long n);
+void factorial(long number, long calcs);
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	chrono::steady_clock::time_point startTime;
 	long long endTime;
@@ -17,12 +17,12 @@ int main(int argc, char *argv[])
 	int numThreads = stoi(argv[3], nullptr, 0);
 	long calcsPerThread = 1000000000 / numThreads;
 	std::cout << "\nCalculating factorial of " << argv[1] << " 1000000000 times";
-	
+
 	for (long k = 0; k < runs; k++) {
 		startTime = chrono::steady_clock::now();
 		vector<thread> threads;
 		for (int i = 0; i < numThreads; i++) {
-			threads.push_back(thread(factorial, calcsPerThread));
+			threads.push_back(thread(factorial, number, calcsPerThread));
 		}
 		for (auto& iter : threads) {
 			iter.join();
@@ -37,10 +37,13 @@ int main(int argc, char *argv[])
 	std::cout << "\n\nAVERAGE FOR " << runs << " RUNS IS: \n MILLISECONDS: " << outputTimeTotal / 1000000 << "\n SECONDS: " << outputTimeTotal / 1000000000 << "\n";
 }
 
-long factorial(long n)
+void factorial(long number, long calcs)
 {
-	int res = 1, i;
-	for (i = 2; i <= n; i++)
-		res *= i;
-	return res;
+	int res;
+	for (long k = 0; k < calcs; k++)
+	{
+		res = 1;
+		for (int i = 2; i <= number; i++)
+			res *= i;
+	}
 }
